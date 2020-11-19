@@ -1,4 +1,4 @@
-package edu.packet;
+package edu.common.packet;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
-package edu.packet.server;
+package edu.common.packet.server;
 
-import edu.packet.Packet;
+import edu.common.packet.Packet;
 
 public class ConfirmRule extends Packet {
     private boolean status;

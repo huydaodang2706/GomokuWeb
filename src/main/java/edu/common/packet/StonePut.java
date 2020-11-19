@@ -1,4 +1,4 @@
-package edu.packet;
+package edu.common.packet;
 
 public class StonePut extends Packet {
     private int x;

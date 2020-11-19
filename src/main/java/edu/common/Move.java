@@ -1,4 +1,4 @@
-package edu.server.engine;
+package edu.common;
 /**
  * Created by Doston Hamrakulov
  */

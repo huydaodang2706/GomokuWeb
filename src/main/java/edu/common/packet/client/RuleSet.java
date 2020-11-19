@@ -1,6 +1,6 @@
-package edu.packet.client;
+package edu.common.packet.client;
 
-import edu.packet.Packet;
+import edu.common.packet.Packet;
 
 public class RuleSet extends Packet {
 

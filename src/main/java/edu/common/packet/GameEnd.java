@@ -1,4 +1,4 @@
-package edu.packet;
+package edu.common.packet;
 
 public class GameEnd extends Packet{
 

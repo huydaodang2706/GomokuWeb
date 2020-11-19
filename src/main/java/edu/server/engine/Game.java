@@ -1,7 +1,8 @@
 package edu.server.engine;
 
-import edu.packet.StonePut;
-import edu.packet.server.GameStart;
+import edu.common.Move;
+import edu.common.packet.StonePut;
+import edu.common.packet.server.GameStart;
 import edu.server.player.Player;
 
 import java.util.Timer;

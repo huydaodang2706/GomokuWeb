@@ -1,15 +1,16 @@
 package edu.server;
 
-import edu.packet.StonePut;
-import edu.packet.client.CreateGame;
-import edu.packet.client.JoinGame;
-import edu.packet.client.RuleSet;
-import edu.packet.client.StartRequest;
-import edu.packet.server.GameID;
-import edu.packet.server.GuestFound;
+import edu.common.packet.StonePut;
+import edu.common.packet.client.CreateGame;
+import edu.common.packet.client.JoinGame;
+import edu.common.packet.client.RuleSet;
+import edu.common.packet.client.StartRequest;
+import edu.common.packet.server.GameID;
+import edu.common.packet.server.GameInfo;
+import edu.common.packet.server.GuestFound;
 import edu.server.engine.Game;
 import edu.server.engine.GameState;
-import edu.server.engine.Move;
+import edu.common.Move;
 import edu.server.player.Player;
 import edu.server.room.Room;
 import edu.server.room.RoomList;
@@ -85,8 +86,9 @@ public class EventListener {
         if(con.getRoom().getGuestPlayer() == null){
             // Do nothing
         }else{
-            // Forward ruleset packet to guest client
-            con.getRoom().getGuestPlayer().getCon().sendObject(rulePacket);
+            // Create GameInfo packet and send this packet to guest client
+            GameInfo gameInfo = new GameInfo(rulePacket,con.getRoom().getHostPlayer().getUsername());
+            con.getRoom().getGuestPlayer().getCon().sendObject(gameInfo);
         }
     }
 

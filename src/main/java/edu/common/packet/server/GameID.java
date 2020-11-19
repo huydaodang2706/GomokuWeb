@@ -1,8 +1,6 @@
-package edu.packet.server;
+package edu.common.packet.server;
 
-import edu.packet.Packet;
-
-import java.io.Serializable;
+import edu.common.packet.Packet;
 
 public class GameID extends Packet {
     private int roomID;

@@ -1,7 +1,7 @@
-package edu.packet.server;
+package edu.common.packet.server;
 
-import edu.packet.Packet;
-import edu.packet.client.RuleSet;
+import edu.common.packet.Packet;
+import edu.common.packet.client.RuleSet;
 
 public class GameInfo extends Packet {
     private RuleSet ruleSet;
