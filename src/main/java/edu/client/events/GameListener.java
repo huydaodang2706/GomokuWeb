@@ -59,4 +59,5 @@ public interface GameListener {
      */
     void userMoveRequested(int playerIndex);
 
+    void settingsChanged();
 }

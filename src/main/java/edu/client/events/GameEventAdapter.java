@@ -34,6 +34,10 @@ public class GameEventAdapter implements GameListener {
     }
 
     @Override
+    public void settingsChanged() {
+    }
+
+    @Override
     public void gameStarted() {
     }
 

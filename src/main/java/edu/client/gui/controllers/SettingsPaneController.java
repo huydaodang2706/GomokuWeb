@@ -1,10 +1,9 @@
-package gui.controllers;
+package edu.client.gui.controllers;
 /**
  * Created by Doston Hamrakulov
  */
 
-import core.Game;
-import core.GameSettings;
+import edu.client.EventListener;
 import gui.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -29,11 +28,11 @@ public class SettingsPaneController implements Controller {
     @FXML
     public CheckBox gameTimingCheckBox;
 
-    private Game game;
+    private EventListener eventListener;
 
     @Override
-    public void initialise(Game game) {
-        this.game = game;
+    public void initialise(EventListener listener) {
+        this.eventListener = listener;
         this.loadSettings();
     }
 
@@ -42,21 +41,21 @@ public class SettingsPaneController implements Controller {
      * values.
      */
     public void loadSettings() {
-        GameSettings settings = game.getSettings();
-        this.sizeComboBox.setValue(settings.getSize());
-        // Avoid showing millisecond values to the user
-        this.gameTimeComboBox.setValue((int) TimeUnit.MINUTES.convert
-                (settings.getGameTimeMillis(), TimeUnit.MILLISECONDS));
-        this.moveTimeComboBox.setValue((int) TimeUnit.SECONDS.convert
-                (settings.getMoveTimeMillis(), TimeUnit.MILLISECONDS));
-        if(settings.gameTimingEnabled()) {
-            gameTimingCheckBox.setSelected(true);
-            gameTimeComboBox.setDisable(false);
-        }
-        if(settings.moveTimingEnabled()) {
-            moveTimingCheckBox.setSelected(true);
-            moveTimeComboBox.setDisable(false);
-        }
+//        GameSettings settings = game.getSettings();
+//        this.sizeComboBox.setValue(settings.getSize());
+//        // Avoid showing millisecond values to the user
+//        this.gameTimeComboBox.setValue((int) TimeUnit.MINUTES.convert
+//                (settings.getGameTimeMillis(), TimeUnit.MILLISECONDS));
+//        this.moveTimeComboBox.setValue((int) TimeUnit.SECONDS.convert
+//                (settings.getMoveTimeMillis(), TimeUnit.MILLISECONDS));
+//        if(settings.gameTimingEnabled()) {
+//            gameTimingCheckBox.setSelected(true);
+//            gameTimeComboBox.setDisable(false);
+//        }
+//        if(settings.moveTimingEnabled()) {
+//            moveTimingCheckBox.setSelected(true);
+//            moveTimeComboBox.setDisable(false);
+//        }
     }
 
     /**
@@ -85,16 +84,16 @@ public class SettingsPaneController implements Controller {
      * Grab the settings from the GUI pane and update the settings accordingly.
      */
     public void updateSettings() {
-        game.getSettings().setMoveTimeMillis(TimeUnit.MILLISECONDS
-                .convert(moveTimeComboBox.getValue(), TimeUnit.SECONDS));
-        game.getSettings().setMoveTimingEnabled(moveTimingCheckBox.isSelected());
-        game.getSettings().setGameTimeMillis(TimeUnit.MILLISECONDS.convert
-                (gameTimeComboBox.getValue(), TimeUnit.MINUTES));
-        game.getSettings().setGameTimingEnabled(gameTimingCheckBox.isSelected());
-        game.getSettings().setSize(sizeComboBox.getValue());
-
-        Stage stage = (Stage) sizeComboBox.getScene().getWindow();
-        stage.close();
+//        game.getSettings().setMoveTimeMillis(TimeUnit.MILLISECONDS
+//                .convert(moveTimeComboBox.getValue(), TimeUnit.SECONDS));
+//        game.getSettings().setMoveTimingEnabled(moveTimingCheckBox.isSelected());
+//        game.getSettings().setGameTimeMillis(TimeUnit.MILLISECONDS.convert
+//                (gameTimeComboBox.getValue(), TimeUnit.MINUTES));
+//        game.getSettings().setGameTimingEnabled(gameTimingCheckBox.isSelected());
+//        game.getSettings().setSize(sizeComboBox.getValue());
+//
+//        Stage stage = (Stage) sizeComboBox.getScene().getWindow();
+//        stage.close();
     }
 
     /**

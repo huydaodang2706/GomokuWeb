@@ -50,4 +50,12 @@ public class EventListener  {
     public void handleGameInfoPacket(GameInfo gameInfoPacket, Client client){
 
     }
+
+    public void addListener(GameListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public List<GameListener> getListeners() {
+        return listeners;
+    }
 }

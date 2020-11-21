@@ -1,12 +1,11 @@
-package gui.controllers;
+package edu.client.gui.controllers;
 /**
  * Created by Doston Hamrakulov
  */
 
-import core.Game;
-import core.Move;
-import events.GameEventAdapter;
-import events.SettingsListener;
+import edu.client.EventListener;
+import edu.client.events.GameEventAdapter;
+import edu.common.Move;
 import gui.Controller;
 import gui.views.BoardPane;
 import javafx.application.Platform;
@@ -17,7 +16,7 @@ public class BoardPaneController implements Controller {
 
     private EventHandler<MouseEvent> mouseListener;
     private final BoardPane boardView;
-    private Game game;
+    private EventListener eventListener;
 
     /**
      * Create a new BoardPaneController.
@@ -28,9 +27,9 @@ public class BoardPaneController implements Controller {
     }
 
     @Override
-    public void initialise(Game game) {
-        this.game = game;
-        game.addListener(new GameEventAdapter() {
+    public void initialise(EventListener listener) {
+        this.eventListener = listener;
+        eventListener.addListener(new GameEventAdapter() {
             EventHandler<MouseEvent> mouseListener;
             @Override
             public void gameStarted() {
@@ -52,8 +51,6 @@ public class BoardPaneController implements Controller {
             public void userMoveRequested(int playerIndex) {
                 handleUserMoveRequested(playerIndex);
             }
-        });
-        game.getSettings().addListener(new SettingsListener() {
             @Override
             public void settingsChanged() {
                 handleSettingsChanged();
@@ -66,9 +63,11 @@ public class BoardPaneController implements Controller {
      */
     private void handleSettingsChanged() {
         // Update the board size and clear
-        Platform.runLater(() -> boardView.setIntersections(game.getSettings()
-                .getSize()));
-        Platform.runLater(() -> boardView.clear());
+//        Platform.runLater(() -> boardView.setIntersections(game.getSettings()
+//                .getSize()));
+//        Platform.runLater(() -> boardView.clear());
+
+        //Send message of RuleSet to Server
     }
 
     /**
@@ -76,6 +75,8 @@ public class BoardPaneController implements Controller {
      * @param playerIndex Player index to retrieve move for
      */
     private void handleUserMoveRequested(int playerIndex) {
+        //Request a move from user and if user make a move, send it to server
+
         // Enable the picker on the board to aid the user when picking a move
         Platform.runLater(() -> boardView.enableStonePicker(playerIndex));
         // Listener submits a move to the game, which can be declined if
@@ -84,13 +85,13 @@ public class BoardPaneController implements Controller {
         this.mouseListener = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                int row = boardView.getClosestRow(event.getY());
-                int col = boardView.getClosestCol(event.getX());
-                if(game.setUserMove(new Move(row, col))) {
-                    boardView.removeEventHandler(MouseEvent
-                            .MOUSE_CLICKED, this);
-                    Platform.runLater(() -> boardView.disableStonePicker());
-                }
+//                int row = boardView.getClosestRow(event.getY());
+//                int col = boardView.getClosestCol(event.getX());
+//                if(game.setUserMove(new Move(row, col))) {
+//                    boardView.removeEventHandler(MouseEvent
+//                            .MOUSE_CLICKED, this);
+//                    Platform.runLater(() -> boardView.disableStonePicker());
+//                }
             }
         };
         boardView.addEventHandler(MouseEvent.MOUSE_CLICKED,
