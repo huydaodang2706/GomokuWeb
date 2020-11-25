@@ -17,7 +17,7 @@ public class Game {
 //    private final List<GameListener> listeners;
     private final GameSettings settings;
     private final ExecutorService executor;
-    private Player[] players;
+    protected Player[] players;
     private final long[] times;
     private final Timer timer;
     private Future<Move> futureMove;

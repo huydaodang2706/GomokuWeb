@@ -5,10 +5,10 @@ import edu.common.packet.Packet;
 public class RuleSet extends Packet {
 
     private int size;
-    private int gameTime;
-    private int moveTime;
+    private long gameTime;
+    private long moveTime;
 
-    public RuleSet(int size, int gameTime, int moveTime) {
+    public RuleSet(int size, long gameTime, long moveTime) {
         this.size = size;
         this.gameTime = gameTime;
         this.moveTime = moveTime;
@@ -22,19 +22,19 @@ public class RuleSet extends Packet {
         this.size = size;
     }
 
-    public int getGameTime() {
+    public long getGameTime() {
         return gameTime;
     }
 
-    public void setGameTime(int gameTime) {
+    public void setGameTime(long gameTime) {
         this.gameTime = gameTime;
     }
 
-    public int getMoveTime() {
+    public long getMoveTime() {
         return moveTime;
     }
 
-    public void setMoveTime(int moveTime) {
+    public void setMoveTime(long moveTime) {
         this.moveTime = moveTime;
     }
 }
