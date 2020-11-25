@@ -31,6 +31,12 @@ public class Room extends Game{
         return players;
     }
 
+    public boolean checkHostPlayer(Connection con){
+        if(getHostPlayer().getCon() == con)
+            return true;
+        return false;
+    }
+
     public Player getHostPlayer() {
         return this.players[0];
     }

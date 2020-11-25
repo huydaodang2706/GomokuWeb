@@ -1,10 +1,8 @@
 package edu.server;
 
 import edu.common.packet.*;
-import edu.common.packet.client.CreateGame;
-import edu.common.packet.client.JoinGame;
-import edu.common.packet.client.RuleSet;
-import edu.common.packet.client.StartRequest;
+import edu.common.packet.client.*;
+import edu.common.packet.server.ClientLeft;
 import edu.common.packet.server.GameID;
 import edu.common.packet.server.GameInfo;
 import edu.common.packet.server.GuestFound;
@@ -42,10 +40,10 @@ public class EventListener {
             // If a player surrender -> GameEnd
             Surrender surPacket = (Surrender)p;
             handleSurPacket(surPacket,con);
-        }else if(p instanceof OpponentLeft){
+        }else if(p instanceof LeaveGame){
             // If opponent left the winner is the remainder
             // Send GameEnd to only winner
-            handleOpponentLeft(con);
+            handleLeaveGame(con);
         }else if(p instanceof OfferDraw){
             // A player send draw offer request to another player
             OfferDraw drawRq = (OfferDraw)p;
@@ -54,6 +52,9 @@ public class EventListener {
             // A player received draw offer request and response
             DrawResponse drawRs = (DrawResponse)p;
             handleDrawRs(drawRs,con);
+        }else if(p instanceof LeftRoom){
+            LeftRoom leftRoom = (LeftRoom) p;
+            handleLeftRoom(leftRoom,con);
         }
         // GameEnd
         // Surrender
@@ -71,8 +72,12 @@ public class EventListener {
         Room room = new Room();
         room.setHostPlayer(new Player(crtPacket.getUsername(),con));
         room.getHostPlayer().getCon().setRoom(room);
-        // Add room to room list
-        RoomList.roomList.add(room);
+
+        // Create new ID for this room
+        room.setRoomID(RoomList.roomList.getLast().getRoomID() + 1);
+
+        // Add room to the end of room list
+        RoomList.roomList.addLast(room);
         GameID gameID = new GameID(room.getRoomID());
         con.sendObject(gameID);
     }
@@ -237,7 +242,10 @@ public class EventListener {
         }
     }
 
-    public void handleOpponentLeft(Connection con){
+    /**
+     * @param con
+     */
+    public void handleLeaveGame(Connection con){
         Room room = con.getRoom();
 
         Player[] players = room.getPlayerByCon(con);
@@ -255,6 +263,36 @@ public class EventListener {
 
         // In this case only need to send to winner player
         winPlayer.getCon().sendObject(gameEnd);
+
+        // If remain player is not host player set it host
+        if(room.checkHostPlayer(con)){
+            room.setHostPlayer(winPlayer);
+        }
+        room.setGuestPlayer(null);
+
+    }
+
+    /**
+     * @param leftRoom
+     * @param con
+     */
+    public void handleLeftRoom(LeftRoom leftRoom,Connection con){
+        Room room = con.getRoom();
+        Player[] players = room.getPlayerByCon(con);
+
+        if(players[1] == null){
+            //No players in this room, remove this room
+            RoomList.roomList.remove(room);
+            return;
+        }else if(room.checkHostPlayer(con)){
+            //Set remain player as host player
+            room.setHostPlayer(players[1]);
+        }
+        room.setGuestPlayer(null);
+
+        //Send ClientLeft object to remain player
+        players[1].getCon().sendObject(new ClientLeft());
+
     }
 
     /**
