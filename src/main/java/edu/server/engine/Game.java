@@ -1,6 +1,7 @@
 package edu.server.engine;
 
 import edu.common.Move;
+import edu.common.packet.GameEnd;
 import edu.common.packet.StonePut;
 import edu.common.packet.server.GameStart;
 import edu.server.player.Player;
@@ -100,9 +101,8 @@ public class Game {
         Player player = players[playerIndex - 1];
         long timeout = calculateTimeoutMillis(playerIndex);
         this.futureMove = executor.submit(() -> player.getMove(state));
-//        listeners.forEach(listener -> listener.userMoveRequested
-//              (playerIndex));
-        // Send an object to Client
+
+//      Send an object to Client
         StonePut movePacket = new StonePut(lastMove.row,lastMove.col);
         player.getCon().sendObject(movePacket);
 
@@ -170,6 +170,8 @@ public class Game {
                 this.players[1].getCon().sendObject(startPacket);
             }
 
+            boolean timeout = false;
+
             while(state.terminal() == 0) {
                 try {
                     long startTime = System.currentTimeMillis();
@@ -199,13 +201,32 @@ public class Game {
                 } catch (TimeoutException ex) {
 //                    stopTimeUpdates();
 //                    LOGGER.log(Level.INFO, timeout(state.getCurrentIndex()));
+//                    Xu ly truong hop timeout cho tung buoc di o day
+                    timeout = true;
                     break;
                 }
             }
 
-            if(state.terminal() != 0) {
-                // Game end and send message to 2 client
+            // Game end and send message to 2 client
+            GameEnd gameEnd = new GameEnd();
+            if(state.terminal() == 1) {
+                gameEnd.setEndingType(GameEnd.EndingType.HOST_WON);
+                gameEnd.setReason(GameEnd.ReasonType.BY_WINNING_MOVE);
+            }else if(state.terminal() == 2){
+                gameEnd.setEndingType(GameEnd.EndingType.GUEST_WON);
+                gameEnd.setReason(GameEnd.ReasonType.BY_WINNING_MOVE);
+            }else if(state.terminal() == 3){
+                gameEnd.setEndingType(GameEnd.EndingType.DRAW);
+                gameEnd.setReason(GameEnd.ReasonType.BY_BOARD_FULL);
+            }else if(timeout){
+                if(state.getCurrentIndex() == 1)
+                    gameEnd.setEndingType(GameEnd.EndingType.GUEST_WON);
+                else
+                    gameEnd.setEndingType(GameEnd.EndingType.HOST_WON);
+                gameEnd.setReason(GameEnd.ReasonType.BY_TIMEOUT);
             }
+            players[0].getCon().sendObject(gameEnd);
+            players[1].getCon().sendObject(gameEnd);
         };
     }
 
