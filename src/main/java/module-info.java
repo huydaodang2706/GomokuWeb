@@ -4,6 +4,7 @@ module edu.hedspi {
     requires java.logging;
     requires gson;
 
-    opens edu.main to javafx.fxml,gson;
+    requires json.simple;
+    opens edu.main to javafx.fxml, gson, json.simple;
     exports edu.main;
 }
