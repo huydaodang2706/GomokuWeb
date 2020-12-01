@@ -1,14 +1,10 @@
-package gui.controllers;
+package edu.client.gui.controllers;
 /**
  * Created by Doston Hamrakulov
  */
 
-import core.Game;
-import core.GameSettings;
-import core.GameSettings.PlayerType;
-import core.Move;
-import events.GameEventAdapter;
-import events.SettingsListener;
+import edu.client.EventListener;
+import edu.client.events.GameEventAdapter;
 import gui.Controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -43,12 +39,12 @@ public class RightPaneController implements Controller {
     @FXML
     public Label player2MoveTimeLabel;
 
-    private Game game;
+    private EventListener eventListener;
 
     @Override
-    public void initialise(Game game) {
-        this.game = game;
-        game.addListener(new GameEventAdapter() {
+    public void initialise(EventListener listener) {
+        this.eventListener = listener;
+        listener.addListener(new GameEventAdapter() {
             @Override
             public void gameStarted() {
                 handleGameStarted();
@@ -69,13 +65,12 @@ public class RightPaneController implements Controller {
             public void gameFinished() {
                 handleGameFinished();
             }
-        });
-        game.getSettings().addListener(new SettingsListener() {
             @Override
             public void settingsChanged() {
                 loadSettings();
             }
         });
+
         loadSettings();
         setupLog();
     }
@@ -169,25 +164,27 @@ public class RightPaneController implements Controller {
      * Load the current game settings and update the panel accordingly.
      */
     private void loadSettings() {
-        GameSettings settings = game.getSettings();
-        if(settings.moveTimingEnabled()) {
-            player1MoveTimeLabel.setText(getTimeString(settings
-                    .getMoveTimeMillis()));
-            player2MoveTimeLabel.setText(getTimeString(settings.
-                    getMoveTimeMillis()));
-        } else {
-            player1MoveTimeLabel.setText("No limit");
-            player2MoveTimeLabel.setText("No limit");
-        }
-        if(settings.gameTimingEnabled()) {
-            player1GameTimeLabel.setText(getTimeString(settings
-                    .getGameTimeMillis()));
-            player2GameTimeLabel.setText(getTimeString(settings.
-                    getGameTimeMillis()));
-        } else {
-            player1GameTimeLabel.setText("No limit");
-            player2GameTimeLabel.setText("No limit");
-        }
+        // Lost setting from GameInfo Packet
+
+//        GameSettings settings = game.getSettings();
+//        if(settings.moveTimingEnabled()) {
+//            player1MoveTimeLabel.setText(getTimeString(settings
+//                    .getMoveTimeMillis()));
+//            player2MoveTimeLabel.setText(getTimeString(settings.
+//                    getMoveTimeMillis()));
+//        } else {
+//            player1MoveTimeLabel.setText("No limit");
+//            player2MoveTimeLabel.setText("No limit");
+//        }
+//        if(settings.gameTimingEnabled()) {
+//            player1GameTimeLabel.setText(getTimeString(settings
+//                    .getGameTimeMillis()));
+//            player2GameTimeLabel.setText(getTimeString(settings.
+//                    getGameTimeMillis()));
+//        } else {
+//            player1GameTimeLabel.setText("No limit");
+//            player2GameTimeLabel.setText("No limit");
+//        }
     }
 
     /**
@@ -208,17 +205,17 @@ public class RightPaneController implements Controller {
      * Update player 1's type. (Computer/Human)
      */
     public void updatePlayer1() {
-        PlayerType type = PlayerType.valueOf(player1Selector.getValue()
-                .toUpperCase());
-        game.getSettings().setPlayer1(type);
+//        PlayerType type = PlayerType.valueOf(player1Selector.getValue()
+//                .toUpperCase());
+//        game.getSettings().setPlayer1(type);
     }
 
     /**
      * Update player 2's type. (Computer/Human)
      */
     public void updatePlayer2() {
-        PlayerType type = PlayerType.valueOf(player2Selector.getValue()
-                .toUpperCase());
-        game.getSettings().setPlayer2(type);
+//        PlayerType type = PlayerType.valueOf(player2Selector.getValue()
+//                .toUpperCase());
+//        game.getSettings().setPlayer2(type);
     }
 }

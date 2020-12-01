@@ -3,10 +3,11 @@ package edu.server.engine;
  * Created by Doston Hamrakulov
  */
 
+import edu.common.Move;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * State for a Gomoku game.

@@ -1,10 +1,9 @@
-package gui.controllers;
+package edu.client.gui.controllers;
 /**
  * Created by Doston Hamrakulov
  */
-
-import core.Game;
-import events.GameEventAdapter;
+import edu.client.EventListener;
+import edu.client.events.GameEventAdapter;
 import gui.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,12 +31,12 @@ public class TopPaneController implements Controller {
     @FXML
     public Button settingsButton;
 
-    private Game game;
+    private EventListener eventListener;
 
     @Override
-    public void initialise(Game game) {
-        this.game = game;
-        this.game.addListener(new GameEventAdapter() {
+    public void initialise(EventListener listener) {
+        this.eventListener = listener;
+        eventListener.addListener(new GameEventAdapter() {
             @Override
             public void gameFinished() {
                 playButton.setVisible(true);
@@ -60,15 +59,15 @@ public class TopPaneController implements Controller {
     }
 
     public void newGame() {
-        game.start();
+//        game.start();
     }
 
     public void stopGame() {
-        game.stop();
+//        game.stop();
     }
 
     public void undo() {
-        game.undo();
+//        game.undo();
     }
 
     public void openSettings() throws IOException {
@@ -76,7 +75,7 @@ public class TopPaneController implements Controller {
                 .getResource("gui/views/SettingsPane.fxml"));
         Pane settingsPane = loader.load();
         Controller controller = loader.getController();
-        controller.initialise(game);
+//        controller.initialise();
         Stage stage = new Stage();
         stage.setTitle("Settings");
         stage.setScene(new Scene(settingsPane));

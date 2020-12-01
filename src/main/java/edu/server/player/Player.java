@@ -2,7 +2,7 @@ package edu.server.player;
 
 import edu.server.Connection;
 import edu.server.engine.GameState;
-import edu.server.engine.Move;
+import edu.common.Move;
 
 public class Player {
 
