@@ -2,7 +2,6 @@ package edu.server;
 
 import edu.common.packet.*;
 import edu.common.packet.client.*;
-import edu.common.packet.server.ClientLeft;
 import edu.common.packet.server.GameID;
 import edu.common.packet.server.GameInfo;
 import edu.common.packet.server.GuestFound;
@@ -52,9 +51,6 @@ public class EventListener {
             // A player received draw offer request and response
             DrawResponse drawRs = (DrawResponse)p;
             handleDrawRs(drawRs,con);
-        }else if(p instanceof LeftRoom){
-            LeftRoom leftRoom = (LeftRoom) p;
-            handleLeftRoom(leftRoom,con);
         }
         // GameEnd
         // Surrender
@@ -247,53 +243,64 @@ public class EventListener {
      */
     public void handleLeaveGame(Connection con){
         Room room = con.getRoom();
-
-        Player[] players = room.getPlayerByCon(con);
-        Player leftPlayer = players[0];
-        Player winPlayer = players[1];
-
-        GameEnd gameEnd = new GameEnd();
-        gameEnd.setReason(GameEnd.ReasonType.BY_OPPONENT_LEFT);
-
-        if(winPlayer == room.getHostPlayer()){
-            gameEnd.setEndingType(GameEnd.EndingType.HOST_WON);
-        }else if(winPlayer == room.getGuestPlayer()){
-            gameEnd.setEndingType(GameEnd.EndingType.GUEST_WON);
-        }
-
-        // In this case only need to send to winner player
-        winPlayer.getCon().sendObject(gameEnd);
-
-        // If remain player is not host player set it host
-        if(room.checkHostPlayer(con)){
-            room.setHostPlayer(winPlayer);
-        }
-        room.setGuestPlayer(null);
-
-    }
-
-    /**
-     * @param leftRoom
-     * @param con
-     */
-    public void handleLeftRoom(LeftRoom leftRoom,Connection con){
-        Room room = con.getRoom();
         Player[] players = room.getPlayerByCon(con);
 
-        if(players[1] == null){
-            //No players in this room, remove this room
-            RoomList.roomList.remove(room);
-            return;
-        }else if(room.checkHostPlayer(con)){
-            //Set remain player as host player
-            room.setHostPlayer(players[1]);
+        if(room.checkAlive()){
+            Player leftPlayer = players[0];
+            Player winPlayer = players[1];
+
+            GameEnd gameEnd = new GameEnd();
+            gameEnd.setReason(GameEnd.ReasonType.BY_OPPONENT_LEFT);
+
+            if(winPlayer == room.getHostPlayer()){
+                gameEnd.setEndingType(GameEnd.EndingType.HOST_WON);
+            }else if(winPlayer == room.getGuestPlayer()){
+                gameEnd.setEndingType(GameEnd.EndingType.GUEST_WON);
+            }
+
+            // In this case only need to send to winner player
+            winPlayer.getCon().sendObject(gameEnd);
+
+            // If remain player is not host player set it host
+            if(room.checkHostPlayer(con)){
+                room.setHostPlayer(winPlayer);
+            }
+            room.setGuestPlayer(null);
+        }else{
+            if(players[1] == null){
+                //No players in this room, remove this room
+                RoomList.roomList.remove(room);
+                return;
+            }else if(room.checkHostPlayer(con)){
+                //Set remain player as host player
+                room.setHostPlayer(players[1]);
+            }
+            room.setGuestPlayer(null);
+
+            //Send ClientLeft object to remain player
+            players[1].getCon().sendObject(new OpponentLeft());
         }
-        room.setGuestPlayer(null);
-
-        //Send ClientLeft object to remain player
-        players[1].getCon().sendObject(new ClientLeft());
-
     }
+
+
+//    public void handleLeftRoom(LeftRoom leftRoom,Connection con){
+//        Room room = con.getRoom();
+//        Player[] players = room.getPlayerByCon(con);
+//
+//        if(players[1] == null){
+//            //No players in this room, remove this room
+//            RoomList.roomList.remove(room);
+//            return;
+//        }else if(room.checkHostPlayer(con)){
+//            //Set remain player as host player
+//            room.setHostPlayer(players[1]);
+//        }
+//        room.setGuestPlayer(null);
+//
+//        //Send ClientLeft object to remain player
+//        players[1].getCon().sendObject(new ClientLeft());
+//
+//    }
 
     /**
      * @param roomID

@@ -289,4 +289,8 @@ public class Game {
     public void setState(GameState state) {
         this.state = state;
     }
+
+    public boolean checkAlive(){
+        return this.gameThread.isAlive();
+    }
 }
