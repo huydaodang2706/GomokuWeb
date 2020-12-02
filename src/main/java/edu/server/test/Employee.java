@@ -57,6 +57,14 @@ public class Employee
         this.emp_colleague = emp_colleague;
     }
 
+    public boolean isAgree() {
+        return agree;
+    }
+
+    public void setAgree(boolean agree) {
+        this.agree = agree;
+    }
+
     @SerializedName("Emp_Gen")
     private String emp_Gen;
     @SerializedName("Emp_dept")
@@ -67,4 +75,6 @@ public class Employee
     private String emp_Pos;
     @SerializedName("Emp_colleague")
     private List<String> emp_colleague;
+    @SerializedName("agree")
+    private boolean agree;
 }
