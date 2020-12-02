@@ -5,7 +5,7 @@ module edu.hedspi {
     requires com.google.gson;
     requires json.simple;
     opens edu.main to javafx.fxml, com.google.gsonc, json.simple;
-    opens edu.server.Test to com.google.gson;
-    exports edu.server.Test;
+    opens edu.server.test to com.google.gson;
+    exports edu.server.test;
     exports edu.main;
 }

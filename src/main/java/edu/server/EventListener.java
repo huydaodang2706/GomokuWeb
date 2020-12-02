@@ -11,8 +11,18 @@ import edu.common.Move;
 import edu.server.player.Player;
 import edu.server.room.Room;
 import edu.server.room.RoomList;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class EventListener {
+
+    public void received1(String p, Connection con) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject packetJson = (JSONObject) parser.parse(p);
+        String packetID = (String) packetJson.get("id");
+    }
+
     /**
      * @param p
      * @param con

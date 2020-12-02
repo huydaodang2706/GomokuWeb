@@ -1,7 +1,5 @@
-package edu.server.Test;
+package edu.server.test;
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
-import java.util.List;
 
 public class Test{
     public static void main(String[] args) {
@@ -16,12 +14,12 @@ public class Test{
         // Cách 1 chuyển đổi json thành object
         Gson gson = new Gson(); // khởi tạo Gson
         Employee employee = gson.fromJson(json, Employee.class); // parse Gson về object
-        System.out.println("Emp_Name:"+ employee.emp_Name);
-        System.out.println("Emp_Gen:"+ employee.emp_Gen);
-        System.out.println("Emp_age:"+ employee.emp_age);
-        System.out.println("Emp_Pos:"+ employee.emp_Pos);
-        System.out.println("Emp_dept:"+ employee.emp_dept);
-        System.out.println("Emp_colleague:"+ employee.emp_colleague.toString());
+        System.out.println("Emp_Name:"+ employee.getEmp_Name());
+        System.out.println("Emp_Gen:"+ employee.getEmp_Gen());
+        System.out.println("Emp_age:"+ employee.getEmp_age());
+        System.out.println("Emp_Pos:"+ employee.getEmp_Pos());
+        System.out.println("Emp_dept:"+ employee.getEmp_dept());
+        System.out.println("Emp_colleague:"+ employee.getEmp_colleague().toString());
 //        // cách 2: không chuyển đổi json thành object mà parse trực tiếp
 //       JsonObject jsonObject =JsonParser.parseString(json).getAsJsonObject();// Nếu bạn không muốn chuyển thành object có thể sử dụng
 //       JsonArray jsonArray = (JsonArray) jsonObject.get("Emp_colleague");
