@@ -1,5 +1,7 @@
 package edu.common.packet;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GameEnd extends Packet{
     public enum EndingType { HOST_WON, GUEST_WON, DRAW };
     public enum ReasonType {
@@ -11,7 +13,9 @@ public class GameEnd extends Packet{
         BY_BOTH_DISCONNECTION,
         BY_TIMEOUT
     }
+    @SerializedName("endingType")
     private EndingType endingType;
+    @SerializedName("reason")
     private ReasonType reason;
 
     public EndingType getEndingType() {

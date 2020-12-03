@@ -1,8 +1,10 @@
 package edu.common.packet.server;
 
+import com.google.gson.annotations.SerializedName;
 import edu.common.packet.Packet;
 
 public class GuestFound extends Packet {
+    @SerializedName("username")
     private String username;
 
     public GuestFound(String username) {
