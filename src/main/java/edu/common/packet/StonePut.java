@@ -1,12 +1,17 @@
 package edu.common.packet;
 
+import com.google.gson.annotations.SerializedName;
+
 public class StonePut extends Packet {
+    @SerializedName("x")
     private int x;
+    @SerializedName("x")
     private int y;
 
     public StonePut(int x, int y) {
         this.x = x;
         this.y = y;
+        this.setId(new String("0x09"));
     }
 
     public int getX() {

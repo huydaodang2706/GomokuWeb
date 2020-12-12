@@ -1,5 +1,6 @@
 package edu.server;
 
+import com.google.gson.Gson;
 import edu.common.packet.*;
 import edu.common.packet.client.*;
 import edu.common.packet.server.GameID;
@@ -11,52 +12,73 @@ import edu.common.Move;
 import edu.server.player.Player;
 import edu.server.room.Room;
 import edu.server.room.RoomList;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class EventListener {
-    /**
-     * @param p
-     * @param con
-     * Function to received object from client
-     * Classify request packet and execute
-     */
-    public void received(Object p, Connection con){
-        if(p instanceof CreateGame){
-            CreateGame crtPacket = (CreateGame)p;
-            handleCreateGame(crtPacket,con);
-        }else if(p instanceof RuleSet){
-            RuleSet rulePacket = (RuleSet) p;
-            handleRuleSet(rulePacket,con);
-        }else if(p instanceof JoinGame){
-            JoinGame joinPacket = (JoinGame)p;
-            handleJoinGame(joinPacket,con);
-        }else if(p instanceof StartRequest){
-            StartRequest startRq = (StartRequest)p;
-            handleStartRq(startRq,con);
-        }else if(p instanceof StonePut){
-            StonePut stone = (StonePut)p;
-            handleStonePutRq(stone,con);
-        }else if(p instanceof Surrender){
-            // If a player surrender -> GameEnd
-            Surrender surPacket = (Surrender)p;
-            handleSurPacket(surPacket,con);
-        }else if(p instanceof LeaveGame){
-            // If opponent left the winner is the remainder
-            // Send GameEnd to only winner
-            handleLeaveGame(con);
-        }else if(p instanceof OfferDraw){
-            // A player send draw offer request to another player
-            OfferDraw drawRq = (OfferDraw)p;
-            handleDrawRq(drawRq,con);
-        }else if(p instanceof DrawResponse){
-            // A player received draw offer request and response
-            DrawResponse drawRs = (DrawResponse)p;
-            handleDrawRs(drawRs,con);
+
+    public void received_data(String p, Connection con) {
+        JSONParser parser = new JSONParser();
+        JSONObject packetJson = null;
+        try {
+            packetJson = (JSONObject) parser.parse(p);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        // GameEnd
-        // Surrender
-        // OpponentLeft
-        // OfferDraw
-        // DrawResponse
+        String packetID = (String) packetJson.get("id");
+
+        Gson gson = new Gson();
+        switch (packetID){
+            case "0x00":
+                //Create Game
+                CreateGame crtPacket = gson.fromJson(p,CreateGame.class);
+                handleCreateGame(crtPacket,con);
+                break;
+            case "0x02":
+                //RuleSet
+                RuleSet rulePacket = gson.fromJson(p,RuleSet.class);
+                handleRuleSet(rulePacket,con);
+                break;
+            case "0x04":
+                //Join Game
+                JoinGame joinPacket = gson.fromJson(p,JoinGame.class);
+                handleJoinGame(joinPacket,con);
+                break;
+            case "0x07":
+                //Start Request
+                StartRequest startRq = gson.fromJson(p,StartRequest.class);
+                handleStartRq(startRq,con);
+                break;
+            case "0x09":
+                //Stone Put
+                StonePut stone = gson.fromJson(p,StonePut.class);
+                handleStonePutRq(stone,con);
+                break;
+            case "0x0a":
+                //Surrender
+                // If a player surrender -> GameEnd
+                Surrender surPacket = gson.fromJson(p,Surrender.class);
+                handleSurPacket(surPacket,con);
+                break;
+            case "0x0b":
+                //Leave Game
+                // If opponent left the winner is the remainder
+                // Send GameEnd to only winner
+                handleLeaveGame(con);
+                break;
+            case "0x0d":
+                //Offer Draw
+                handleDrawRq(con);
+                break;
+            case "0x0e":
+                //Draw Response
+                DrawResponse drawRs = gson.fromJson(p,DrawResponse.class);
+                handleDrawRs(drawRs,con);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -208,10 +230,9 @@ public class EventListener {
 
     /**
      * Receive OfferDraw Packet and forward to other player
-     * @param drawRq
      * @param con
      */
-    public void handleDrawRq(OfferDraw drawRq,Connection con){
+    public void handleDrawRq(Connection con){
         Room room = con.getRoom();
 
         Player[] players = room.getPlayerByCon(con);
@@ -282,26 +303,6 @@ public class EventListener {
         }
     }
 
-
-//    public void handleLeftRoom(LeftRoom leftRoom,Connection con){
-//        Room room = con.getRoom();
-//        Player[] players = room.getPlayerByCon(con);
-//
-//        if(players[1] == null){
-//            //No players in this room, remove this room
-//            RoomList.roomList.remove(room);
-//            return;
-//        }else if(room.checkHostPlayer(con)){
-//            //Set remain player as host player
-//            room.setHostPlayer(players[1]);
-//        }
-//        room.setGuestPlayer(null);
-//
-//        //Send ClientLeft object to remain player
-//        players[1].getCon().sendObject(new ClientLeft());
-//
-//    }
-
     /**
      * @param roomID
      * @return room found
@@ -313,5 +314,53 @@ public class EventListener {
                 return x;
         }
         return null;
+    }
+
+
+
+    /**
+     * @param p
+     * @param con
+     * Function to received object from client
+     * Classify request packet and execute
+     */
+    public void received(Object p, Connection con){
+        if(p instanceof CreateGame){
+            CreateGame crtPacket = (CreateGame)p;
+            handleCreateGame(crtPacket,con);
+        }else if(p instanceof RuleSet){
+            RuleSet rulePacket = (RuleSet) p;
+            handleRuleSet(rulePacket,con);
+        }else if(p instanceof JoinGame){
+            JoinGame joinPacket = (JoinGame)p;
+            handleJoinGame(joinPacket,con);
+        }else if(p instanceof StartRequest){
+            StartRequest startRq = (StartRequest)p;
+            handleStartRq(startRq,con);
+        }else if(p instanceof StonePut){
+            StonePut stone = (StonePut)p;
+            handleStonePutRq(stone,con);
+        }else if(p instanceof Surrender){
+            // If a player surrender -> GameEnd
+            Surrender surPacket = (Surrender)p;
+            handleSurPacket(surPacket,con);
+        }else if(p instanceof LeaveGame){
+            // If opponent left the winner is the remainder
+            // Send GameEnd to only winner
+            handleLeaveGame(con);
+        }else if(p instanceof OfferDraw){
+            // A player send draw offer request to another player
+            OfferDraw drawRq = (OfferDraw)p;
+            handleDrawRq(con);
+        }else if(p instanceof DrawResponse){
+            // A player received draw offer request and response
+            DrawResponse drawRs = (DrawResponse)p;
+            handleDrawRs(drawRs,con);
+        }
+        // GameEnd
+        // Surrender
+        // OpponentLeft
+        // OfferDraw
+        // DrawResponse
     }
 }

@@ -1,18 +1,16 @@
 package edu.server;
 
+import com.google.gson.Gson;
 import edu.server.room.Room;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Map;
 
 public class Connection implements Runnable {
     private Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private DataInputStream in;
+    private DataOutputStream out;
 
     private EventListener listener;
     private boolean running = false;
@@ -26,8 +24,8 @@ public class Connection implements Runnable {
         this.id = id;
 
         try {
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            this.in = new ObjectInputStream(socket.getInputStream());
+            this.out = new DataOutputStream(socket.getOutputStream());
+            this.in = new DataInputStream(socket.getInputStream());
             listener = new EventListener();
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,21 +39,17 @@ public class Connection implements Runnable {
      */
     @Override
     public void run() {
-        try {
-            running = true;
+        running = true;
 
-            while (running) {
-                try {
-                    Object data = in.readObject();
-//                  Execute object received
-                    listener.received(data, this);
-                } catch (ClassNotFoundException | EOFException e) {
-                    e.printStackTrace();
-                    break;
-                }
+        while (running) {
+            try {
+                String data = in.readUTF();
+//              Execute object received
+                listener.received_data(data, this);
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         if (!socket.isClosed()) {
             close();
@@ -80,12 +74,16 @@ public class Connection implements Runnable {
 
     /**
      * @param packet
-     * Send object of response object to Client Socket
+     * Convert Object Response packet to String
+     * Send string of response object to Client Socket
      */
     public void sendObject(Object packet) {
         try {
-            out.reset();
-            out.writeObject(packet);
+//            out.reset();
+            Gson gson = new Gson();
+            //Convert Object to json and to string
+            String data = gson.toJson(packet).toString();
+            out.writeUTF(data);
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,22 +96,6 @@ public class Connection implements Runnable {
 
     public void setSocket(Socket socket) {
         this.socket = socket;
-    }
-
-    public ObjectInputStream getIn() {
-        return in;
-    }
-
-    public void setIn(ObjectInputStream in) {
-        this.in = in;
-    }
-
-    public ObjectOutputStream getOut() {
-        return out;
-    }
-
-    public void setOut(ObjectOutputStream out) {
-        this.out = out;
     }
 
     public EventListener getListener() {

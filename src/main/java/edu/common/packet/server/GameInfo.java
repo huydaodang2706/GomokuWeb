@@ -1,10 +1,13 @@
 package edu.common.packet.server;
 
+import com.google.gson.annotations.SerializedName;
 import edu.common.packet.Packet;
 import edu.common.packet.client.RuleSet;
 
 public class GameInfo extends Packet {
+    @SerializedName("ruleSet")
     private RuleSet ruleSet;
+    @SerializedName("hostUsername")
     private String hostUsername;
 
     public GameInfo(RuleSet ruleSet, String hostUsername) {
